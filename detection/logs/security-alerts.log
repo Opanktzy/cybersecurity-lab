@@ -1,0 +1,2 @@
+[ALERT] rule=FORBIDDEN_ACCESS line=7 evidence=2026-09-07T12:01:12 127.0.0.1 GET /users/2 403
+[ALERT] rule=FORBIDDEN_ACCESS line=8 evidence=2026-09-07T12:01:13 127.0.0.1 GET /users/3 403
