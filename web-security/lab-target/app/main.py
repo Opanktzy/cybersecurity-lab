@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Header, HTTPException
 from app.database import get_connection, init_db
-
+import subprocess
+import ipaddress
 
 init_db()
 
@@ -147,3 +148,25 @@ def get_user(
         status_code=404,
         detail="User not found",
     )
+@app.get("/ping")
+def ping_host(host: str):
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid IP address",
+        )
+
+    result = subprocess.run(
+        ["ping", "-c", "1", host],
+        capture_output=True,
+        text=True,
+        timeout=5,
+    )
+
+    return {
+        "host": host,
+        "output": result.stdout,
+        "error": result.stderr,
+    }
