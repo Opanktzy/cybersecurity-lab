@@ -1,4 +1,8 @@
 from fastapi import FastAPI, Header, HTTPException
+from app.database import get_connection, init_db
+
+
+init_db()
 
 app = FastAPI(
     title="CyberLab Vulnerable API",
@@ -69,6 +73,26 @@ def get_users():
         for user in users
     ]
 
+@app.get("/products")
+def search_products(search: str = ""):
+    connection = get_connection()
+
+    query = """
+        SELECT id, name, category, price
+        FROM products
+        WHERE name LIKE ?
+    """
+
+    parameter = f"%{search}%"
+
+    products = connection.execute(
+        query,
+        (parameter,),
+    ).fetchall()
+
+    connection.close()
+
+    return [dict(product) for product in products]
 
 @app.get("/users/me")
 def get_current_user(x_token: str = Header(...)):
