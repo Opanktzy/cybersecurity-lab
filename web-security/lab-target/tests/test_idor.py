@@ -2,17 +2,35 @@ import requests
 
 BASE_URL = "http://127.0.0.1:8000"
 
+HEADERS = {
+    "X-Token": "alice-token"
+}
 
-def test_user_object_access():
-    for user_id in range(1, 4):
-        response = requests.get(
-            f"{BASE_URL}/users/{user_id}",
-            timeout=5,
-        )
 
-        print(f"GET /users/{user_id} -> {response.status_code}")
-        print(response.json())
+def test_own_object():
+    response = requests.get(
+        f"{BASE_URL}/users/1",
+        headers=HEADERS,
+        timeout=5,
+    )
+
+    print("[+] Alice accessing Alice")
+    print(f"Status: {response.status_code}")
+    print(f"Response: {response.json()}")
+
+
+def test_other_object():
+    response = requests.get(
+        f"{BASE_URL}/users/2",
+        headers=HEADERS,
+        timeout=5,
+    )
+
+    print("\n[+] Alice accessing Bob")
+    print(f"Status: {response.status_code}")
+    print(f"Response: {response.json()}")
 
 
 if __name__ == "__main__":
-    test_user_object_access()
+    test_own_object()
+    test_other_object()
